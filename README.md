@@ -23,7 +23,7 @@ node {
                   extensions                       : [[$class           : 'RelativeTargetDirectory',
                                                        relativeTargetDir: 'jenkins-pipeline-goodness'],
                                                       [$class           : 'CleanCheckout']],
-                  userRemoteConfigs                : [[url: 'git@double-deployment.github.com:doublescoring/jenkins-pipeline-goodness.git']], // Jenkins Pipeline Goodness url
+                  userRemoteConfigs                : [[url: 'git@github.com:doublescoring/jenkins-pipeline-goodness.git']], // Jenkins Pipeline Goodness url
                   branches                         : [[name: 'refs/tags/1.1.1']]]) // Jenkins Pipeline Goodness version
     }
     docker = load "jenkins-pipeline-goodness/src/main/groovy/docker.groovy" // attach docker module
