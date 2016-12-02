@@ -48,7 +48,7 @@ node {
 Utilities
 ---------
 
-### [Docker](https://github.com/doublescoring/jenkins-pipeline-goodness/blob/master/src/main/groovy/docker.groovy)
+### [docker.groovy](src/main/groovy/docker.groovy)
 
 * `exec` - Execute command inside docker image
 * `imageBuildPush` - Build a docker image, tag it, and push to repo
