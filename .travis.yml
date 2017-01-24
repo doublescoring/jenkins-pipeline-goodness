@@ -1,0 +1,52 @@
+sudo: required
+
+language: java
+
+branches:
+  only:
+    - master
+    - /^v[0-9]+/
+
+env:
+  global:
+    - "COMMIT=${TRAVIS_COMMIT::8}"
+    - "TAG=$(if [ \"$TRAVIS_BRANCH\" == \"master\" ]; then echo \"latest\"; else echo $TRAVIS_BRANCH ; fi)"
+    - "GIT_TAG=$(git describe --tags --abbrev=0 || git describe --always)"
+    - "DOCKER_VERSION=1.12.3"
+    - "TMP=\"$(pwd)/tmp\""
+    - "TEST_REPOSITORY=localhost:5000"
+    - "TEST_WRAPPER=$TMP/double-deployment-jenkins-library-wrapper"
+    - "TEST_IMAGE=doublescoring/test"
+
+services:
+  - docker
+
+before_script:
+  - |
+    # Prepare environment
+    set -e
+    mkdir -p $TMP
+    # check docker versions
+    docker version
+    docker run -d -p 5000:5000 --restart=always --name registry registry:2
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}:5000' registry | xargs wget --retry-connrefused --tries=5 -q --wait=3 --spider
+    printf '#!/bin/bash\n#\necho $@ >>$TMP/wrapper.log\neval $@\n' > $TEST_WRAPPER
+    chmod a+x $TEST_WRAPPER
+    echo TW:$TEST_WRAPPER TR:$TEST_REPOSITORY TI:$TEST_IMAGE
+    cat $TEST_WRAPPER
+
+script:
+  - echo -e "\e[0;33mTest jenkins-pipeline-goodness COMMIT:$COMMIT TAG:$TAG GIT_TAG:$GIT_TAG BUILD_NUMBER:$TRAVIS_BUILD_NUMBER\e[m" && echo -en 'travis_fold:start:build\\r'
+  - |
+    set -e
+    docker images
+    mvn test
+  - echo -en 'travis_fold:end:build\\r'
+
+after_success:
+  - |
+    # Publish image
+    set -e
+    docker images
+    docker stop registry && docker rm -v registry
+    echo Success
