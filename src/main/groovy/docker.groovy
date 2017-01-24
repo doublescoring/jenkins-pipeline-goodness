@@ -97,23 +97,23 @@ String run(name, tag, port, options = "", repo = "", int timeoutSeconds = 5*60) 
  */
 @NonCPS
 void removeImage(name, tag, repo="", boolean alwaysTrue = true) {
-    def dockerImagesIdFile = temporaryFile("dockerImagesId", "", false).toString()
+    def dockerImagesFile = temporaryFile("dockerImagesId", "", false).toString()
     if (repo?.trim()) {
-        sh "docker images ${repo}/${name}:${tag} | tail -n +2 | awk '{ print \$1 \":\" \$2}' > ${dockerImagesIdFile}"
+        sh "docker images ${repo}/${name}:${tag} | awk '/\\d+/ { print \$1 \":\" \$2}' > ${dockerImagesFile}"
     } else {
-        sh "docker images ${name}:${tag} | tail -n +2 | awk '{ print \$1 \":\" \$2}' > ${dockerImagesIdFile}"
+        sh "docker images ${name}:${tag} | awk '/\\d+/ { print \$1 \":\" \$2}' > ${dockerImagesFile}"
     }
-    String dockerImagesId = readFile(dockerImagesIdFile).trim()
-    dockerImagesId.eachLine { dockerImageId, count ->
-        echo("Remove image " + dockerImageId)
+    String dockerImages = readFile(dockerImagesFile).trim()
+    dockerImages.eachLine { dockerImageName, count ->
+        echo("Remove image " + dockerImageName)
         // TODO: add PKI auth
         //if (repo?.trim()) {
         //  sh "curl -X DELETE registry-url/v1/repositories/repository-name/"
         //}
         if (alwaysTrue) {
-            sh "docker rmi ${dockerImageId}; true"
+            sh "docker rmi ${dockerImageName}; true"
         } else {
-            sh "docker rmi ${dockerImageId}"
+            sh "docker rmi ${dockerImageName}"
         }
     }
 }
