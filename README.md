@@ -82,4 +82,3 @@ Copyright
 Copyright © 2016 DoubleData Ltd. All rights reserved.
 
 <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://airflow.incubator.apache.org/_images/apache.jpg" width="140" alt="Apache License" title="Apache License"/></a>
-
