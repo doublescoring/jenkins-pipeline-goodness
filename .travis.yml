@@ -2,11 +2,6 @@ sudo: required
 
 language: java
 
-branches:
-  only:
-    - master
-    - /^v[0-9]+/
-
 env:
   global:
     - "COMMIT=${TRAVIS_COMMIT::8}"
