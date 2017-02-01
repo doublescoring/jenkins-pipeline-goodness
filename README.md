@@ -58,6 +58,12 @@ Utilities
 * `readVersion` - Read LABEL version="n.n.n" from Dockerfile
 * `temporaryFile` - Get temporary file
 
+Tests
+-----
+
+**mvn test** - for all tests
+
+**mvn -Dtest=environmentTest test** - for environment tests
 
 Versioning Guidelines
 ---------------------

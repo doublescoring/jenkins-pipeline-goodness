@@ -24,6 +24,9 @@
  * NonCPS mock
  */
 public @interface NonCPS {}
+
+def currentDir = ""
+
 /**
  * Mock pipeline method
  */
@@ -42,5 +45,27 @@ def stage(message) {
  */
 def echo(message) {
     System.out.println(message)
+}
+/**
+ * Mock dir method
+ */
+def dir(path, closure) {
+    currentDir = path
+    closure()
+}
+/**
+ * Mock load method
+ */
+def load(file) {
+}
+/**
+ * Mock writeFile
+ */
+def writeFile(args) {
+    def file = new File(currentDir, args.file)
+    def writer = new PrintWriter(file)
+    writer.print(args.text)
+    writer.flush()
+    writer.close()
 }
 
