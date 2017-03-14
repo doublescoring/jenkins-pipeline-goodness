@@ -25,15 +25,7 @@
  * @param url repository uri
  */
 void shallowClone(String remoteBranch, String localBranch, String path, String url, int depth) {
-    checkout([$class                     : 'GitSCM', branches: [[name: remoteBranch]],
-              doGenerateSubmoduleConfigurations: false,
-              extensions                       : [[$class           : 'RelativeTargetDirectory', relativeTargetDir: path],
-                                                  [$class           : 'CloneOption', depth: depth, noTags: false, reference: '', shallow: true],
-                                                  [$class           : 'LocalBranch', localBranch: localBranch],
-                                                  [$class           : 'CleanCheckout']],
-              submoduleCfg                     : [],
-              userRemoteConfigs                : [[name         : 'origin',
-                                                   url          : url ]]])
+    shallowClone(remoteBranch, localBranch, path, [name: 'origin', url: url], depth)
 }
 /**
  * Make a copy of a git repository with GitSCM
@@ -41,7 +33,18 @@ void shallowClone(String remoteBranch, String localBranch, String path, String u
  * @param branch remoteBranch repository branch name
  * @param branch localBranch repository branch name
  * @param path local path
- * @param userRemoteConfigs repository uri
+ * @param userRemoteConfigs remote settings
+ */
+void shallowClone(String remoteBranch, String localBranch, String path, Map userRemoteConfigs, int depth) {
+    shallowClone(remoteBranch, localBranch, path, [userRemoteConfigs], depth)
+}
+/**
+ * Make a copy of a git repository with GitSCM
+ *
+ * @param branch remoteBranch repository branch name
+ * @param branch localBranch repository branch name
+ * @param path local path
+ * @param userRemoteConfigs remote settings
  */
 void shallowClone(String remoteBranch, String localBranch, String path, List userRemoteConfigs, int depth) {
     checkout([$class                     : 'GitSCM', branches: [[name: remoteBranch]],
@@ -51,7 +54,7 @@ void shallowClone(String remoteBranch, String localBranch, String path, List use
                                                   [$class           : 'LocalBranch', localBranch: localBranch],
                                                   [$class           : 'CleanCheckout']],
               submoduleCfg                     : [],
-              userRemoteConfigs                : userRemoteConfigs)
+              userRemoteConfigs                : userRemoteConfigs])
 }
 
 return this;
