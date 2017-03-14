@@ -35,5 +35,23 @@ void shallowClone(String remoteBranch, String localBranch, String path, String u
               userRemoteConfigs                : [[name         : 'origin',
                                                    url          : url ]]])
 }
+/**
+ * Make a copy of a git repository with GitSCM
+ *
+ * @param branch remoteBranch repository branch name
+ * @param branch localBranch repository branch name
+ * @param path local path
+ * @param userRemoteConfigs repository uri
+ */
+void shallowClone(String remoteBranch, String localBranch, String path, List userRemoteConfigs, int depth) {
+    checkout([$class                     : 'GitSCM', branches: [[name: remoteBranch]],
+              doGenerateSubmoduleConfigurations: false,
+              extensions                       : [[$class           : 'RelativeTargetDirectory', relativeTargetDir: path],
+                                                  [$class           : 'CloneOption', depth: depth, noTags: false, reference: '', shallow: true],
+                                                  [$class           : 'LocalBranch', localBranch: localBranch],
+                                                  [$class           : 'CleanCheckout']],
+              submoduleCfg                     : [],
+              userRemoteConfigs                : userRemoteConfigs)
+}
 
 return this;
