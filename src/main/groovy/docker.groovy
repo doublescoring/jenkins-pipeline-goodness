@@ -39,7 +39,17 @@ int exec(Id, String... args) {
 void imageBuildPush(name, base, tag, repo) {
   stage "Building docker image ${name}:${base}"
   sh "docker build -t ${name}:${base} ."
-
+  imagePush(name, base, tag, repo)
+}
+/**
+ * Tag a docker image, push it to repo
+ *
+ * @param name Image name
+ * @param base Base build tag (i.e. latest, release)
+ * @param tag Special tag to push, i.e. 0.1.2 or env.BUILD_NUMBER
+ * @param repo Docker repository
+ */
+void imagePush(name, base, tag, repo) {
   stage "Push to ${repo} with tag ${base}"
   sh "docker tag ${name}:${base} ${repo}/${name}:${base}"
   sh "docker push ${repo}/${name}:${base}"
