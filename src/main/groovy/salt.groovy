@@ -55,11 +55,11 @@ String getMapBlock(Map map, int level) {
         def key = keys[iKey]
         def value = map[key]
         if (Map.isAssignableFrom(value.getClass())) {
-            output = output + "  " * level + "'$key':\n" + getMapBlock(value, level + 1)
+            output = output + "  " * level + "$key:\n" + getMapBlock(value, level + 1)
         } else if (Collection.isAssignableFrom(value.getClass()) || Object[].isAssignableFrom(value.getClass())) {
-            output = output + "  " * level + "'$key':\n" + getArrayBlock(value, level + 1)
+            output = output + "  " * level + "$key:\n" + getArrayBlock(value, level + 1)
         } else {
-            output = output + "  " * level + "'$key':" + value
+            output = output + "  " * level + "$key:" + value
         }
         output = output + "\n"
         iKey++

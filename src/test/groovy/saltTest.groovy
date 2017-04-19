@@ -66,7 +66,7 @@ class saltTest {
         //print("\n" + map1 + "\n")
         //def map2 = shell.evaluate("script.generateConfig(['a': ['c': 'd', collection: [1,2,[kk: [bb: 'dd']]]]]);")
         //print("\n" + map2 + "\n")
-        def map3 = shell.evaluate("script.generateConfig(['file_roots': ['base': ['a', 'b', 'c']], 'pillar_roots': ['base': ['e', 'f', 'g']]]);")
+        def map3 = shell.evaluate("script.generateConfig([file_roots: [base: ['a', 'b', 'c']], pillar_roots: [base: ['e', 'f', 'g']]]);")
         print("\n" + map3 + "\n")
     }
 
