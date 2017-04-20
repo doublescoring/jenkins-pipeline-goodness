@@ -59,7 +59,7 @@ String getMapBlock(Map map, int level) {
         } else if (Collection.isAssignableFrom(value.getClass()) || Object[].isAssignableFrom(value.getClass())) {
             output = output + "  " * level + "$key:\n" + getArrayBlock(value, level + 1)
         } else {
-            output = output + "  " * level + "$key:" + value
+            output = output + "  " * level + "$key: " + value
         }
         output = output + "\n"
         iKey++
