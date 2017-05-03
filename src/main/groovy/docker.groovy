@@ -37,7 +37,7 @@ int exec(Id, String... args) {
  * @param repo Docker repository
  */
 void imageBuildPush(name, base, tag, repo) {
-  stage "Building docker image ${name}:${base}"
+  echo "Building docker image ${name}:${base}"
   sh "docker build -t ${name}:${base} ."
   imagePush(name, base, tag, repo)
 }
@@ -50,11 +50,11 @@ void imageBuildPush(name, base, tag, repo) {
  * @param repo Docker repository
  */
 void imagePush(name, base, tag, repo) {
-  stage "Push to ${repo} with tag ${base}"
+  echo "Push to ${repo} with tag ${base}"
   sh "docker tag ${name}:${base} ${repo}/${name}:${base}"
   sh "docker push ${repo}/${name}:${base}"
 
-  stage "Push to ${repo} with tag ${tag}"
+  echo "Push to ${repo} with tag ${tag}"
   sh "docker tag ${name}:${base} ${repo}/${name}:${tag}"
   sh "docker push ${repo}/${name}:${tag}"
 }
