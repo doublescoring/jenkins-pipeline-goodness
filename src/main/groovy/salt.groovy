@@ -20,14 +20,19 @@
 /**
  * Execute salt-ssh and verify output
  */
-def saltSSH(argument) {
-    saltSSHVerify(sh(script: 'salt-ssh ' + argument, returnStdout: true).trim())
+void saltSSH(argument) {
+    def output = sh(script: 'salt-ssh ' + argument, returnStdout: true).trim()
+    echo(output)
+    if (!saltSSHVerify(output))
+        error("SaltStack failed")
 }
 
 /**
  * Verify salt-ssh output
  */
-def saltSSHVerify(argument) {
+boolean saltSSHVerify(output) {
+    def trimmed = output.trim()
+
     // Error state (python dependencies are absent)
     // dbl.dev.salt-test:
     // ----------
@@ -46,10 +51,7 @@ def saltSSHVerify(argument) {
     // stderr:
     // stdout:
     def errorRegEx02 = /(?ms).*----------\n\s+retcode:\n\s+0\n\s+stderr:\n\s+stdout:$/
-
-    echo(output)
-    if (output ==~ errorRegEx01 || output ==~ errorRegEx02)
-        error("SaltStack failed")
+    return !(trimmed ==~ errorRegEx01 || trimmed ==~ errorRegEx02)
 }
 
 /**
