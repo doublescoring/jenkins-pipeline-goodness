@@ -16,6 +16,44 @@
  *  limitations under the License.
  */
 
+
+/**
+ * Execute salt-ssh and verify output
+ */
+void saltSSH(argument) {
+    def output = sh(script: 'salt-ssh ' + argument, returnStdout: true).trim()
+    echo(output)
+    if (!saltSSHVerify(output))
+        error("SaltStack failed")
+}
+
+/**
+ * Verify salt-ssh output
+ */
+boolean saltSSHVerify(output) {
+    def trimmed = output.trim()
+
+    // Error state (python dependencies are absent)
+    // dbl.dev.salt-test:
+    // ----------
+    // retcode:
+    //     0
+    // stderr:
+    //    Connection to 34.202.157.113 closed.
+    // stdout:
+    def errorRegEx01 = /(?ms).*----------\n\s+retcode:\n\s+0\n\s+stderr:\n\s+Connection to .* closed.\n\s+stdout:$/
+
+    // Errar state DEVOPS-230
+    // dbl.dev.emails-box.staging:
+    // ----------
+    // retcode:
+    //     0
+    // stderr:
+    // stdout:
+    def errorRegEx02 = /(?ms).*----------\n\s+retcode:\n\s+0\n\s+stderr:\n\s+stdout:$/
+    return !(trimmed ==~ errorRegEx01 || trimmed ==~ errorRegEx02)
+}
+
 /**
  * Generate salt configuration
  */

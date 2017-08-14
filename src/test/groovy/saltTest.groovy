@@ -70,6 +70,31 @@ class saltTest {
         print("\n" + map3 + "\n")
     }
 
+    @Test
+    void testSaltSSHVerify() {
+        def outputError01 = """
+dbl.dev.salt-test:
+    ----------
+    retcode:
+        0
+    stderr:
+       Connection to 34.202.157.113 closed.
+    stdout:
+        """
+        def verification01 = shell.evaluate("script.saltSSHVerify(\"\"\"${outputError01}\"\"\");")
+        assert(!verification01)
+        def outputError02 = """
+dbl.dev.emails-box.staging:
+    ----------
+    retcode:
+        0
+    stderr:
+    stdout:
+"""
+        def verification02 = shell.evaluate("script.saltSSHVerify(\"\"\"${outputError02}\"\"\");")
+        assert(!verification02)
+    }
+
     int sh(String command) {
         println "execute " + command
         def (exitCode, stdout, stderr) = runCommand([test_wrapper, command])
