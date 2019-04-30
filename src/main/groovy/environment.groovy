@@ -1,3 +1,6 @@
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+
 /*
  *  Jenkins Pipeline Goodness
  *
@@ -59,6 +62,24 @@ void withConda(String environment, closure) {
         sh "echo test conda environment; test \"\$CONDA_DEFAULT_ENV\" = \"${environment}\""
         closure()
     }
+}
+
+/**
+ * Create a fresh Conda environment from a given specification.
+ * @param namePrefix name prefix of environment being created.
+ * @param condaRequirementsFilename Path to <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file">YAML specification</a> of the environment.
+ * @return the name of created environment
+ */
+void createCondaEnvFromSpec(String namePrefix,
+                    String condaRequirementsFilename) {
+    name = namePrefix + "_" + DateTimeFormatter.ofPattern("yyyyMMdd_hhmmss").format(ZonedDateTime.now())
+    echo "Create Conda env $name"
+    createCode = sh script: "conda env create -n $name -f $condaRequirementsFilename",
+            returnStatus: true
+    if (createCode > 0) {
+        echo "Failed to create env $name, exit code $createCode"
+    }
+    sh script: "conda list -n $name"
 }
 
 /**
