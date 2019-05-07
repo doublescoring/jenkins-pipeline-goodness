@@ -58,6 +58,16 @@ Utilities
 * `readVersion` - Read LABEL version="n.n.n" from Dockerfile
 * `temporaryFile` - Get temporary file
 
+### [airflow.groovy](src/main/groovy/airflow.groovy)
+
+Simple airflow integration. Support for DAG triggering passing config from Jenkins. 
+
+* `trigger` - Trigger DAG
+* `getState` - Return DAG state (running/failed/...)
+* `waitFor` - Wait for DAG finish, i.e. success or failed state
+
+**Important**: `getState` and `waitFor` require Airflow version 1.10.3 or higher
+
 Tests
 -----
 
@@ -74,6 +84,7 @@ CONTRIBUTORS
 ------------
 
 * Alexey Aksenov
+* Pavel Shuvalov
 
 LICENSE
 -------
@@ -85,6 +96,6 @@ Please check the individual source files for details.
 Copyright
 ---------
 
-Copyright © 2016 DoubleData Ltd. All rights reserved.
+Copyright © 2016-2019 DoubleData Ltd. All rights reserved.
 
 <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://airflow.incubator.apache.org/_images/apache.jpg" width="140" alt="Apache License" title="Apache License"/></a>
