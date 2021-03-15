@@ -33,7 +33,7 @@ String trigger(String airflowUrl, String dagName, Map dagParams = [], String run
     }
     def body = new JsonBuilder(runDagRequest).toString()
     echo("Sending request to airflow ${body}")
-    def airflowApiUrl = "${airflowUrl}/api/experimental/dags/${dagName}/dag_runs"
+    def airflowApiUrl = "${airflowUrl}/api/v1/dags/${dagName}/dagRuns"
     def response = httpRequest url: airflowApiUrl, requestBody: body, httpMode: 'POST'
     echo("Response from Airflow: ${response.content}")
     assert(response.status == 200)
