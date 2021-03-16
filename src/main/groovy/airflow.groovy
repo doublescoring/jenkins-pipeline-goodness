@@ -29,7 +29,7 @@ import groovy.json.JsonSlurperClassic
 String trigger(String airflowUrl, String dagName, Map dagParams = [], String runId = null) {
     def runDagRequest = [conf: dagParams]
     if (runId != null) {
-        runDagRequest << [run_id: runId]
+        runDagRequest << [dag_run_id: runId]
     }
     def body = new JsonBuilder(runDagRequest).toString()
     echo("Sending request to airflow ${body}")
