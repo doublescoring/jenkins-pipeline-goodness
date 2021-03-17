@@ -40,11 +40,11 @@ String trigger(String airflowUrl, String dagName, Map dagParams = [], String run
         customHeaders: [[name: 'Authorization', value: "Basic ${auth}"]]
     echo("Response from Airflow: ${response.content}")
     assert(response.status == 200)
-    def responseMessage = new JsonSlurperClassic().parseText(response.content)['message']
+    def executionDate = new JsonSlurperClassic().parseText(response.content)['execution_date']
     // Here is
-    executionDate = parseExecutionDate(responseMessage, dagName)
+    // executionDate = parseExecutionDate(responseMessage, dagName)
     echo("Got execution date ${executionDate}")
-    dagUrl = "${airflowUrl}/admin/airflow/graph?dag_id=${dagName}&root=&execution_date=${executionDate}"
+    dagUrl = "${airflowUrl}/admin/airflow/graph?dag_id=${dagName}&execution_date=${executionDate}"
     return [executionDate: executionDate, dagUrl: dagUrl]
 }
 
