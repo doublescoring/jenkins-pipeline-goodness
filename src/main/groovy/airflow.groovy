@@ -34,7 +34,10 @@ String trigger(String airflowUrl, String dagName, Map dagParams = [], String run
     def body = new JsonBuilder(runDagRequest).toString()
     echo("Sending request to airflow ${body}")
     def airflowApiUrl = "${airflowUrl}/api/v1/dags/${dagName}/dagRuns"
-    def response = httpRequest url: airflowApiUrl, requestBody: body, httpMode: 'POST', contentType: 'APPLICATION_JSON', authentication: 'admin:ESh8Mievoh2fifae6hof'
+    def creds = "admin:ESh8Mievoh2fifae6hof"
+    String auth = creds.bytes.encodeBase64().toString()
+    def response = httpRequest url: airflowApiUrl, requestBody: body, httpMode: 'POST', contentType: 'APPLICATION_JSON', 
+        customHeaders: [[name: 'Authorization', value: "Basic ${auth}"]]
     echo("Response from Airflow: ${response.content}")
     assert(response.status == 200)
     def responseMessage = new JsonSlurperClassic().parseText(response.content)['message']
