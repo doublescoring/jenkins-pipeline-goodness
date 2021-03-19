@@ -26,7 +26,7 @@ import groovy.json.JsonSlurperClassic
  * @param runId Optional run_id for Airflow
  * @return Map with two keys: executionDate (execution_date from Airflow) and dagUrl
  */
-String trigger(String airflowUrl, String dagName, Map dagParams = [], String runId = null) {
+String trigger(String airflowUrl, String dagName, Map dagParams = [], String runId = null, String credentials) {
     def runDagRequest = [conf: dagParams]
     if (runId != null) {
         runDagRequest << [dag_run_id: runId]
@@ -34,8 +34,7 @@ String trigger(String airflowUrl, String dagName, Map dagParams = [], String run
     def body = new JsonBuilder(runDagRequest).toString()
     echo("Sending request to airflow ${body}")
     def airflowApiUrl = "${airflowUrl}/api/v1/dags/${dagName}/dagRuns"
-    def creds = "admin:ESh8Mievoh2fifae6hof"
-    String auth = creds.bytes.encodeBase64().toString()
+    String auth = credentials.bytes.encodeBase64().toString()
     def response = httpRequest url: airflowApiUrl, requestBody: body, httpMode: 'POST', contentType: 'APPLICATION_JSON', 
         customHeaders: [[name: 'Authorization', value: "Basic ${auth}"]]
     echo("Response from Airflow: ${response.content}")
