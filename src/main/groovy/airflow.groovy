@@ -40,8 +40,6 @@ String trigger(String airflowUrl, String dagName, Map dagParams = [], String run
     echo("Response from Airflow: ${response.content}")
     assert(response.status == 200)
     def executionDate = new JsonSlurperClassic().parseText(response.content)['execution_date']
-    // Here is
-    // executionDate = parseExecutionDate(responseMessage, dagName)
     echo("Got execution date ${executionDate}")
     dagUrl = "${airflowUrl}/admin/airflow/graph?dag_id=${dagName}&execution_date=${executionDate}"
     return [executionDate: executionDate, dagUrl: dagUrl]
