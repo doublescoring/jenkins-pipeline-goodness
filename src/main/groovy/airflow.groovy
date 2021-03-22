@@ -26,32 +26,33 @@ import groovy.json.JsonSlurperClassic
  * @param runId Optional run_id for Airflow
  * @return Map with two keys: executionDate (execution_date from Airflow) and dagUrl
  */
-String trigger(String airflowUrl, String dagName, Map dagParams = [], String runId = null) {
+String trigger(String airflowUrl, String dagName, Map dagParams = [], String runId = null, String credentials) {
     def runDagRequest = [conf: dagParams]
     if (runId != null) {
-        runDagRequest << [run_id: runId]
+        runDagRequest << [dag_run_id: runId]
     }
     def body = new JsonBuilder(runDagRequest).toString()
     echo("Sending request to airflow ${body}")
-    def airflowApiUrl = "${airflowUrl}/api/experimental/dags/${dagName}/dag_runs"
-    def response = httpRequest url: airflowApiUrl, requestBody: body, httpMode: 'POST'
+    def airflowApiUrl = "${airflowUrl}/api/v1/dags/${dagName}/dagRuns"
+    String auth = credentials.bytes.encodeBase64().toString()
+    def response = httpRequest url: airflowApiUrl, requestBody: body, httpMode: 'POST', contentType: 'APPLICATION_JSON', 
+        customHeaders: [[name: 'Authorization', value: "Basic ${auth}"]]
     echo("Response from Airflow: ${response.content}")
     assert(response.status == 200)
-    def responseMessage = new JsonSlurperClassic().parseText(response.content)['message']
-    // Here is
-    executionDate = parseExecutionDate(responseMessage, dagName)
+    def executionDate = new JsonSlurperClassic().parseText(response.content)['execution_date']
+    executionDate = parseExecutionDate(executionDate)
     echo("Got execution date ${executionDate}")
-    dagUrl = "${airflowUrl}/admin/airflow/graph?dag_id=${dagName}&root=&execution_date=${executionDate}"
+    dagUrl = "${airflowUrl}/graph?dag_id=${dagName}&execution_date=${executionDate}"
     return [executionDate: executionDate, dagUrl: dagUrl]
 }
 
 /**
- * Internal method - parse execution date from Airflow API respnse
+ * Internal method - parse execution date from Airflow API response
  * @param message
  * @return
  */
-String parseExecutionDate(String message, String dagName) {
-    return message.split("${dagName} @ ")[1].replaceFirst(/\+.*/, "").replace(" ", "T")
+String parseExecutionDate(String execDate) {
+    return execDate.replace("+","%2B").replace(":","%3A").replace("T","+")
 }
 
 /**
