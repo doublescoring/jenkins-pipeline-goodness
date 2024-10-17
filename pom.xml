@@ -35,7 +35,7 @@
 
     <properties>
         <junit.version>4.13.1</junit.version>
-        <groovy.version>2.4.7</groovy.version>
+        <groovy.version>2.4.21</groovy.version>
         <gmaven.runtime>1.8</gmaven.runtime>
         <gmaven-plugin.version>1.5</gmaven-plugin.version>
     </properties>
